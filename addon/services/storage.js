@@ -1,12 +1,16 @@
 import Ember from 'ember';
+import { computed } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
+import { reads } from '@ember/object/computed';
 import EmberObject from '@ember/object';
+import { getOwner } from '@ember/application';
 
-var storage = {};
+var storage = {
+    local: {},
+    session: {},
+};
 
 export default Ember.Service.extend({
-
-    fastboot: service(),
 
     prefix: 'es',
     type: 'local',
@@ -27,34 +31,22 @@ export default Ember.Service.extend({
         if ( this.get('fastboot.isFastBoot') !== true ) {
 
             storage = {
-              'local': window.localStorage,
-              'session': window.sessionStorage,
+                local: window.localStorage,
+                session: window.sessionStorage,
             };
 
             window.addEventListener('storage', this._notify, false);
 
-        } else {
-
         }
 
     }),
-
-    willDestroy() {
-
-        this._super();
-
-        if ( this.get('fastboot.isFastBoot') !== true ) {
-            window.removeEventListener('storage', this._notify, false);
-        }
-
-    },
 
     unknownProperty(k) {
 
         var key = this._prefix(k),
         type = this.get('type');
 
-        return storage[type][key] && JSON.parse(storage[type][key]);
+        return storage[type][key];
 
     },
 
@@ -66,8 +58,9 @@ export default Ember.Service.extend({
         if ( Ember.isNone(value) ) {
             delete storage[type][key];
         } else {
-            storage[type][key] = JSON.stringify(value);
+            storage[type][key] = value;
         }
+
         this.notifyPropertyChange(k);
         return value;
 
@@ -96,6 +89,16 @@ export default Ember.Service.extend({
 
         this.endPropertyChanges();
 
-    }
+    },
+
+    willDestroy() {
+
+        this._super();
+
+        if ( this.get('fastboot.isFastBoot') !== true ) {
+            window.removeEventListener('storage', this._notify, false);
+        }
+
+    },
 
 });
