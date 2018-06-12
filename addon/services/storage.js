@@ -46,7 +46,13 @@ export default Ember.Service.extend({
         var key = this._prefix(k),
         type = this.get('type');
 
-        return storage[type][key];
+        let value = storage[type][key];
+        if ( value && typeof(value) === "string" ) {
+            console.log(value);
+            value = value.split('"').join("");
+        }
+
+        return value;
 
     },
 
@@ -57,7 +63,7 @@ export default Ember.Service.extend({
 
         if ( Ember.isNone(value) ) {
             delete storage[type][key];
-        } else {
+        } else if ( key.indexOf("fastboot") === -1 ) {
             storage[type][key] = value;
         }
 
