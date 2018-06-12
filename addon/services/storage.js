@@ -1,9 +1,5 @@
 import Ember from 'ember';
 import { computed } from '@ember/object';
-import Service, { inject as service } from '@ember/service';
-import { reads } from '@ember/object/computed';
-import EmberObject from '@ember/object';
-import { getOwner } from '@ember/application';
 
 var storage = {
     local: {},
