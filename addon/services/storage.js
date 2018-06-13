@@ -44,7 +44,6 @@ export default Ember.Service.extend({
 
         let value = storage[type][key];
         if ( value && typeof(value) === "string" ) {
-            console.log(value);
             value = value.split('"').join("");
         }
 
