@@ -10,6 +10,7 @@ export default Ember.Service.extend({
 
     prefix: 'es',
     type: 'local',
+    fastboot: null,
 
     _prefix(key) {
         return this.get('prefix')+'__'+key;
@@ -24,7 +25,7 @@ export default Ember.Service.extend({
             self.notifyPropertyChange(evnt.key.replace(regexp, ''));
         };
 
-        if ( this.get('fastboot.isFastBoot') !== true ) {
+        if ( this.get('fastboot') && this.get('fastboot.isFastBoot') !== true ) {
 
             storage = {
                 local: window.localStorage,
